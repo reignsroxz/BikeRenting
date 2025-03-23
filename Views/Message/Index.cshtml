@@ -1,0 +1,32 @@
+@model IEnumerable<Message>
+
+<h1>Messages</h1>
+
+<p><a asp-action="Create">Create New</a></p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Guest Name</th>
+            <th>Guest Email</th>
+            <th>Message Text</th>
+            <th>Message Date</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.GuestName</td>
+                <td>@item.GuestEmail</td>
+                <td>@item.MessageText</td>
+                <td>@item.MessageDate</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.MessageID">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@item.MessageID">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

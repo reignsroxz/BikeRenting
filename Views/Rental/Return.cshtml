@@ -1,0 +1,37 @@
+@model BikeSharingApp.Models.Rental
+
+@{
+    ViewData["Title"] = "Return Bike";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-warning text-white">
+                    <h2>Return Bike</h2>
+                </div>
+                <div class="card-body">
+                    <h3>Are you sure you want to return this bike?</h3>
+                    <div class="mt-4">
+                        <dl class="row">
+                            <dt class="col-sm-3">Bike Type</dt>
+                            <dd class="col-sm-9">@Model.Bike.BikeType</dd>
+                            <dt class="col-sm-3">Owner</dt>
+                            <dd class="col-sm-9">@Model.Bike.Owner.FullName</dd>
+                            <dt class="col-sm-3">Rental Start</dt>
+                            <dd class="col-sm-9">@Model.RentalStart.ToString("MM/dd/yyyy HH:mm")</dd>
+                            <dt class="col-sm-3">Duration</dt>
+                            <dd class="col-sm-9">@((DateTime.Now - Model.RentalStart).TotalHours.ToString("F1")) hours</dd>
+                        </dl>
+                    </div>
+                    <form asp-action="Return">
+                        <input type="hidden" asp-for="RentalID" />
+                        <button type="submit" class="btn btn-success">Confirm Return</button>
+                        <a asp-action="MyRentals" class="btn btn-secondary">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

@@ -1,0 +1,103 @@
+﻿@model BikeSharingApp.Models.HomeViewModel
+
+@{
+    ViewData["Title"] = "Welcome to City Bike Sharing";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h2>Welcome to City Bike Sharing</h2>
+                </div>
+                <div class="card-body">
+                    <h3>About Our Program</h3>
+                    <p>The City Bike Sharing program is an initiative by the City Council to promote sustainable transportation and reduce carbon emissions. Our program provides affordable and convenient access to bicycles for both residents and visitors.</p>
+
+                    <h3>Program Highlights</h3>
+                    <ul>
+                        <li>Affordable bike rentals for all residents</li>
+                        <li>Convenient locations throughout the city</li>
+                        <li>Easy-to-use online booking system</li>
+                        <li>Regular maintenance and safety checks</li>
+                        <li>Community-driven reviews and feedback</li>
+                    </ul>
+
+                    <h3>How It Works</h3>
+                    <ol>
+                        <li>Register as a member (free)</li>
+                        <li>Browse available bikes</li>
+                        <li>Rent a bike for your journey</li>
+                        <li>Return the bike to any designated location</li>
+                        <li>Share your experience through reviews</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h3>Recent Reviews</h3>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentReviews.Any())
+                    {
+                        foreach (var review in Model.RecentReviews)
+                        {
+                            <div class="review-item mb-3">
+                                <h5>@review.Bike.BikeType - Rating: @review.Rating/5</h5>
+                                <p>@review.ReviewText</p>
+                                <small class="text-muted">By @review.Renter.FullName on @review.ReviewDate.ToString("MM/dd/yyyy")</small>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p>No reviews yet. Be the first to share your experience!</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h3>Quick Stats</h3>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Available Bikes:</span>
+                        <span class="badge bg-success">@Model.AvailableBikesCount</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Total Members:</span>
+                        <span class="badge bg-primary">@Model.TotalUsersCount</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-warning">
+                    <h3>Quick Links</h3>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <a asp-controller="Bike" asp-action="Index" class="list-group-item list-group-item-action">Browse Bikes</a>
+                            <a asp-controller="User" asp-action="Profile" class="list-group-item list-group-item-action">My Profile</a>
+                            <a asp-controller="Rental" asp-action="MyRentals" class="list-group-item list-group-item-action">My Rentals</a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Account" asp-action="Register" class="list-group-item list-group-item-action">Register</a>
+                            <a asp-controller="Account" asp-action="Login" class="list-group-item list-group-item-action">Login</a>
+                            <a asp-controller="Bike" asp-action="Index" class="list-group-item list-group-item-action">Browse Bikes</a>
+                        }
+                        <a asp-controller="Home" asp-action="Contact" class="list-group-item list-group-item-action">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

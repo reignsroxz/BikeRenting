@@ -1,0 +1,108 @@
+@model BikeSharingApp.Models.BikeIndexViewModel
+
+@{
+    ViewData["Title"] = "Available Bikes";
+}
+
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>Available Bikes</h2>
+        </div>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            var currentUserId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0");
+            if (currentUserId == 1) // Only user with ID 1 can add bikes
+            {
+                <div class="col-md-4 text-end">
+                    <a asp-action="Create" class="btn btn-primary">List Your Bike</a>
+                </div>
+            }
+        }
+    </div>
+
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <div class="card mb-4">
+            <div class="card-body">
+                <form asp-action="Index" method="get" class="row g-3">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="searchString" class="form-label">Search</label>
+                            <input type="text" name="searchString" id="searchString" class="form-control" value="@Model.SearchString" placeholder="Search bikes, locations, or owners...">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="bikeType" class="form-label">Bike Type</label>
+                            <select name="bikeType" id="bikeType" class="form-select">
+                                <option value="">All Types</option>
+                                @foreach (var type in Model.BikeTypes)
+                                {
+                                    <option value="@type" selected="@(type == Model.SelectedBikeType)">@type</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="location" class="form-label">Location</label>
+                            <select name="location" id="location" class="form-select">
+                                <option value="">All Locations</option>
+                                @foreach (var loc in Model.Locations)
+                                {
+                                    <option value="@loc" selected="@(loc == Model.SelectedLocation)">@loc</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <p>Please <a asp-controller="User" asp-action="Login">login</a> to use search filters and find bikes more easily.</p>
+        </div>
+    }
+
+    <div class="row">
+        @if (Model.Bikes.Any())
+        {
+            @foreach (var bike in Model.Bikes)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">@bike.BikeType</h5>
+                            <p class="card-text">
+                                <strong>Location:</strong> @bike.Location<br />
+                                <strong>Owner:</strong> @(bike.Owner?.FullName ?? "Unknown")<br />
+                                <strong>Status:</strong> @(bike.IsAvailable ? "Available" : "Not Available")
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a asp-action="Details" asp-route-id="@bike.BikeID" class="btn btn-info">View Details</a>
+                                @if (User.Identity?.IsAuthenticated == true && bike.OwnerID != int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0"))
+                                {
+                                    <a asp-action="Rent" asp-route-id="@bike.BikeID" class="btn btn-success">Rent Now</a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="alert alert-warning">
+                    <p>No bikes found matching your search criteria.</p>
+                </div>
+            </div>
+        }
+    </div>
+</div>

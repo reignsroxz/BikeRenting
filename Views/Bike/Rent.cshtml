@@ -1,0 +1,85 @@
+@model BikeSharingApp.Models.Bike
+
+@{
+    ViewData["Title"] = "Rent Bike";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Rent Bike</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <strong>Bike Type:</strong>
+                        </div>
+                        <div class="col-md-8">
+                            @Model.BikeType
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <strong>Location:</strong>
+                        </div>
+                        <div class="col-md-8">
+                            @Model.Location
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <strong>Hourly Rate:</strong>
+                        </div>
+                        <div class="col-md-8">
+                            @Model.HourlyRate.ToString("C")
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <strong>Description:</strong>
+                            </div>
+                            <div class="col-md-8">
+                                @Model.Description
+                            </div>
+                        </div>
+                    }
+                    @if (Model.Owner != null)
+                    {
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <strong>Owner:</strong>
+                            </div>
+                            <div class="col-md-8">
+                                @Model.Owner.FirstName @Model.Owner.LastName
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="card-footer">
+                    <form asp-action="Rent" asp-route-id="@Model.BikeID" method="post">
+                        @Html.AntiForgeryToken()
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> By renting this bike, you agree to return it in good condition and pay the hourly rate.
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Details" asp-route-id="@Model.BikeID" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to Details
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-check"></i> Confirm Rental
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 

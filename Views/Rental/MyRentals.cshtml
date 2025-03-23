@@ -1,0 +1,96 @@
+@model IEnumerable<BikeSharingApp.Models.Rental>
+
+@{
+    ViewData["Title"] = "My Rentals";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2>My Rentals</h2>
+                </div>
+                <div class="card-body">
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["SuccessMessage"]
+                        </div>
+                    }
+
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            @TempData["ErrorMessage"]
+                        </div>
+                    }
+
+                    @if (Model.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Bike</th>
+                                        <th>Owner</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var rental in Model)
+                                    {
+                                        <tr>
+                                            <td>@rental.Bike.BikeType</td>
+                                            <td>@rental.Bike.Owner.FullName</td>
+                                            <td>@rental.RentalStart.ToString("MM/dd/yyyy HH:mm")</td>
+                                            <td>
+                                                @if (rental.RentalEnd.HasValue)
+                                                {
+                                                    @rental.RentalEnd.Value.ToString("MM/dd/yyyy HH:mm")
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">Not returned</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (rental.RentalEnd.HasValue)
+                                                {
+                                                    <span class="badge bg-success">Completed</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-warning">Active</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a asp-action="Details" asp-route-id="@rental.RentalID" class="btn btn-sm btn-info">Details</a>
+                                                    @if (!rental.RentalEnd.HasValue)
+                                                    {
+                                                        <a asp-action="Return" asp-route-id="@rental.RentalID" class="btn btn-sm btn-success">Return</a>
+                                                    }
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <p>You haven't rented any bikes yet.</p>
+                            <a asp-controller="Bike" asp-action="Index" class="btn btn-primary">Browse Bikes</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

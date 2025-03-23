@@ -1,0 +1,63 @@
+@model BikeSharingApp.Models.Review
+
+@{
+    ViewData["Title"] = "Create Review";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2>Create Review</h2>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" asp-route-id="@Model.BikeID" method="post" id="reviewForm">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <input type="hidden" asp-for="BikeID" />
+                        <input type="hidden" asp-for="RenterID" />
+                        <input type="hidden" asp-for="ReviewDate" />
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Rating" class="control-label">Rating (1-5)</label>
+                            <select asp-for="Rating" class="form-select" required>
+                                <option value="">Select a rating</option>
+                                <option value="1">1 - Poor</option>
+                                <option value="2">2 - Fair</option>
+                                <option value="3">3 - Good</option>
+                                <option value="4">4 - Very Good</option>
+                                <option value="5">5 - Excellent</option>
+                            </select>
+                            <span asp-validation-for="Rating" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="ReviewText" class="control-label">Your Review</label>
+                            <textarea asp-for="ReviewText" class="form-control" rows="5" placeholder="Share your experience with this bike..." required></textarea>
+                            <span asp-validation-for="ReviewText" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary" id="submitButton">Submit Review</button>
+                            <a asp-controller="Bike" asp-action="Details" asp-route-id="@Model.BikeID" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function() {
+            $("#reviewForm").on("submit", function(e) {
+                var submitButton = $("#submitButton");
+                submitButton.prop("disabled", true);
+                submitButton.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Submitting...');
+            });
+        });
+    </script>
+} 

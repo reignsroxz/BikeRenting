@@ -1,0 +1,44 @@
+@model IEnumerable<BikeSharingApp.Models.Rental>
+
+@{
+    ViewData["Title"] = "My Rentals";
+}
+
+<div class="container mt-5">
+    <h2>My Rentals</h2>
+
+    @if (Model?.Any() == true)
+    {
+        <div class="row">
+            @foreach (var rental in Model)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">@(rental.Bike?.BikeType ?? "Unknown Bike")</h5>
+                            <p class="card-text">
+                                <strong>Location:</strong> @(rental.Bike?.Location ?? "Not specified")<br />
+                                <strong>Owner:</strong> @(rental.Bike?.Owner?.FullName ?? "Unknown Owner")<br />
+                                <strong>Start Date:</strong> @rental.RentalStart.ToShortDateString()<br />
+                                <strong>End Date:</strong> @(rental.RentalEnd?.ToShortDateString() ?? "Not returned")
+                            </p>
+                            @if (rental.RentalEnd == null)
+                            {
+                                <form asp-action="ReturnBike" asp-route-id="@rental.RentalID" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-success">Return Bike</button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <p>You haven't rented any bikes yet.</p>
+            <a asp-controller="Bike" asp-action="Index" class="btn btn-primary">Browse Available Bikes</a>
+        </div>
+    }
+</div>

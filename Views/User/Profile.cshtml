@@ -1,0 +1,102 @@
+@model BikeSharingApp.Models.User
+
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h2>Profile Information</h2>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Name</dt>
+                        <dd class="col-sm-9">@Model.FullName</dd>
+                        <dt class="col-sm-3">Email</dt>
+                        <dd class="col-sm-9">@Model.Email</dd>
+                        <dt class="col-sm-3">Phone</dt>
+                        <dd class="col-sm-9">@(Model.PhoneNumber ?? "Not provided")</dd>
+                        <dt class="col-sm-3">Member Since</dt>
+                        <dd class="col-sm-9">@Model.RegistrationDate.ToString("MM/dd/yyyy")</dd>
+                    </dl>
+                    <a asp-action="Edit" class="btn btn-primary">Edit Profile</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h3>My Bikes</h3>
+                </div>
+                <div class="card-body">
+                    @if (Model.Bikes.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Location</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var bike in Model.Bikes)
+                                    {
+                                        <tr>
+                                            <td>@bike.BikeType</td>
+                                            <td>@bike.Location</td>
+                                            <td>
+                                                @if (bike.IsAvailable)
+                                                {
+                                                    <span class="badge bg-success">Available</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger">Not Available</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a asp-controller="Bike" asp-action="Details" asp-route-id="@bike.BikeID" class="btn btn-sm btn-info">Details</a>
+                                                    <a asp-controller="Bike" asp-action="Edit" asp-route-id="@bike.BikeID" class="btn btn-sm btn-primary">Edit</a>
+                                                    <a asp-controller="Bike" asp-action="Delete" asp-route-id="@bike.BikeID" class="btn btn-sm btn-danger">Delete</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>You haven't listed any bikes yet.</p>
+                        <a asp-controller="Bike" asp-action="Create" class="btn btn-primary">List a Bike</a>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h3>Quick Actions</h3>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        @if (Model.UserID == 1)
+                        {
+                            <a asp-controller="Bike" asp-action="Create" class="list-group-item list-group-item-action">List a New Bike</a>
+                        }
+                        <a asp-controller="Rental" asp-action="Index" class="list-group-item list-group-item-action">My Rentals</a>
+                        <a asp-controller="Review" asp-action="Index" class="list-group-item list-group-item-action">My Reviews</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

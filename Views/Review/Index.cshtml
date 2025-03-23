@@ -1,0 +1,41 @@
+@model IEnumerable<BikeSharingApp.Models.Review>
+
+@{
+    ViewData["Title"] = "My Reviews";
+}
+
+<div class="container mt-5">
+    <h2>My Reviews</h2>
+
+    @if (Model?.Any() == true)
+    {
+        <div class="row">
+            @foreach (var review in Model)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">@review.Bike?.BikeType</h5>
+                            <p class="card-text">
+                                <strong>Rating:</strong> @review.Rating / 5<br />
+                                <strong>Review:</strong> @review.ReviewText<br />
+                                <strong>Date:</strong> @review.ReviewDate.ToString("MM/dd/yyyy")
+                            </p>
+                            <div class="btn-group">
+                                <a asp-action="Edit" asp-route-id="@review.ReviewID" class="btn btn-primary">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@review.ReviewID" class="btn btn-danger">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <p>You haven't written any reviews yet.</p>
+            <a asp-controller="Bike" asp-action="Index" class="btn btn-primary">Browse Bikes</a>
+        </div>
+    }
+</div>

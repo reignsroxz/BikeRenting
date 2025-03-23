@@ -1,0 +1,54 @@
+@model BikeSharingApp.Models.Bike
+
+@{
+    ViewData["Title"] = "Edit Bike";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Edit Bike</h2>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="BikeID" />
+                        <input type="hidden" asp-for="OwnerID" />
+                        
+                        <div class="mb-3">
+                            <label asp-for="BikeType" class="form-label">Bike Type</label>
+                            <input asp-for="BikeType" class="form-control" />
+                            <span asp-validation-for="BikeType" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Location" class="form-label">Location</label>
+                            <input asp-for="Location" class="form-control" />
+                            <span asp-validation-for="Location" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="IsAvailable" class="form-label">Availability Status</label>
+                            <select asp-for="IsAvailable" class="form-select">
+                                <option value="true">Available</option>
+                                <option value="false">Not Available</option>
+                            </select>
+                            <span asp-validation-for="IsAvailable" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

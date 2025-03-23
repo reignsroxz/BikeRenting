@@ -1,0 +1,87 @@
+@model BikeSharingApp.Models.Rental
+
+@{
+    ViewData["Title"] = "Rental Details";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2>Rental Details</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>Bike Information</h4>
+                            <dl class="row">
+                                <dt class="col-sm-4">Type</dt>
+                                <dd class="col-sm-8">@Model.Bike.BikeType</dd>
+                                <dt class="col-sm-4">Location</dt>
+                                <dd class="col-sm-8">@Model.Bike.Location</dd>
+                                <dt class="col-sm-4">Owner</dt>
+                                <dd class="col-sm-8">@Model.Bike.Owner.FullName</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <h4>Rental Information</h4>
+                            <dl class="row">
+                                <dt class="col-sm-4">Renter</dt>
+                                <dd class="col-sm-8">@Model.Renter.FullName</dd>
+                                <dt class="col-sm-4">Start Date</dt>
+                                <dd class="col-sm-8">@Model.RentalStart.ToString("MM/dd/yyyy HH:mm")</dd>
+                                <dt class="col-sm-4">End Date</dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.RentalEnd.HasValue)
+                                    {
+                                        @Model.RentalEnd.Value.ToString("MM/dd/yyyy HH:mm")
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Not returned</span>
+                                    }
+                                </dd>
+                                <dt class="col-sm-4">Status</dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.RentalEnd.HasValue)
+                                    {
+                                        <span class="badge bg-success">Completed</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning">Active</span>
+                                    }
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h4>Duration</h4>
+                        @if (Model.RentalEnd.HasValue)
+                        {
+                            <p>Total rental duration: @((Model.RentalEnd.Value - Model.RentalStart).TotalHours.ToString("F1")) hours</p>
+                        }
+                        else
+                        {
+                            <p>Current duration: @((DateTime.Now - Model.RentalStart).TotalHours.ToString("F1")) hours</p>
+                        }
+                    </div>
+
+                    <div class="mt-4">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            var currentUserId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0");
+                            if (Model.RenterID == currentUserId && !Model.RentalEnd.HasValue)
+                            {
+                                <a asp-action="Return" asp-route-id="@Model.RentalID" class="btn btn-success">Return Bike</a>
+                            }
+                        }
+                        <a asp-action="MyRentals" class="btn btn-secondary">Back to My Rentals</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
